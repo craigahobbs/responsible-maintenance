@@ -1,0 +1,3 @@
+function rmDashboardMain():
+    markdownPrint('Hello, Dashboard!')
+endfunction
