@@ -8,11 +8,6 @@
 Coming soon!
 
 
-## Links
-
-- [Source code](https://github.com/craigahobbs/responsible-maintenance)
-
-
 ## Development
 
 This package is developed using [python-build](https://github.com/craigahobbs/python-build#readme).
