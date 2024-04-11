@@ -13,6 +13,10 @@ $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/python-build/m
 $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/python-build/main/pylintrc))
 
 
+# Set gh-pages source
+GHPAGES_SRC := static/
+
+
 # Include python-build
 include Makefile.base
 
