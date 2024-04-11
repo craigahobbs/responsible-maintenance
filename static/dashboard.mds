@@ -1,3 +1,5 @@
-function rmDashboardMain():
-    markdownPrint('Hello, Dashboard!')
+async function dashboardMain():
+    dashboardTypes = schemaParse(systemFetch('dashboardTypes.smd'))
+    remainModel = schemaValidate(dashboardTypes, 'ResponsibleMaintenance', jsonParse(systemFetch('example/example.json')))
+    markdownPrint('~~~', jsonStringify(remainModel, 4), '~~~')
 endfunction
