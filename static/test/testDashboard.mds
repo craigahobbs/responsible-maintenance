@@ -33,9 +33,14 @@ async function testDashboardMain():
         unittestMockEnd(), \
         arrayNew( \
             arrayNew('systemFetch', arrayNew('responsible-maintenance.json')), \
+            arrayNew('documentSetTitle', arrayNew('Responsible Maintenance Dashboard - my-package')), \
             arrayNew('markdownPrint', arrayNew( \
-                '**Package:** my-package \\', \
-                '**Language:** Python \\', \
+                '# Responsible Maintenance Dashboard', \
+                '', \
+                '**Package:** my-package', \
+                '', \
+                '**Language:** Python', \
+                '', \
                 '**Home:** [my\\-package Home Page](https://craigahobbs.github.io/my-package/)' \
             )) \
         ) \

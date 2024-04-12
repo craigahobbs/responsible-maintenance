@@ -2,18 +2,27 @@
 # https://github.com/craigahobbs/responsible-maintenance/blob/main/LICENSE
 
 
+# The Responsible Maintenance Dashboard main entry point
 async function dashboardMain():
     url = if(vURL != null, vURL, 'responsible-maintenance.json')
     model = schemaValidate(dashboardTypes, 'ResponsibleDashboard', jsonParse(systemFetch(url)))
     packageName = objectGet(model, 'packageName')
+
+    title = 'Responsible Maintenance Dashboard'
+    documentSetTitle(title + ' - ' + packageName)
     markdownPrint( \
-        '**Package:** ' + packageName + ' \\', \
-        '**Language:** ' + objectGet(model, 'language') + ' \\', \
+        '# ' + title, \
+        '', \
+        '**Package:** ' + packageName, \
+        '', \
+        '**Language:** ' + objectGet(model, 'language'), \
+        '', \
         '**Home:** [' + markdownEscape(packageName) + ' Home Page](' + objectGet(model, 'homeURL') + ')' \
     )
 endfunction
 
 
+# The Responsible Maintenance Dashboard type model
 dashboardTypes = schemaParse( \
     '# The Responsible Maintenance Dashboard model', \
     'struct ResponsibleDashboard', \
