@@ -1,13 +1,26 @@
 # Licensed under the MIT License
 # https://github.com/craigahobbs/responsible-maintenance/blob/main/LICENSE
 
+include <args.mds>
+
 
 # The Responsible Maintenance Dashboard main entry point
 async function dashboardMain():
-    url = if(vURL != null, vURL, 'responsible-maintenance.json')
+    args = argsParse(dashboardArgs)
+
+    # Render the dashboard model documentation, if requested
+    if objectGet(args, 'doc'):
+        markdownPrint(argsLink(dashboardArgs, 'Home'))
+        elementModelRender(schemaElements(dashboardTypes, 'ResponsibleDashboard'))
+        return
+    endif
+
+    # Fetch, parse, and validate the dashboard model
+    url = objectGet(args, 'url')
     model = schemaValidate(dashboardTypes, 'ResponsibleDashboard', jsonParse(systemFetch(url)))
     packageName = objectGet(model, 'packageName')
 
+    # Render the dashboard
     title = 'Responsible Maintenance Dashboard'
     documentSetTitle(title + ' - ' + packageName)
     markdownPrint( \
@@ -20,6 +33,13 @@ async function dashboardMain():
         '**Home:** [' + markdownEscape(packageName) + ' Home Page](' + objectGet(model, 'homeURL') + ')' \
     )
 endfunction
+
+
+# The Responsible Maintenance Dashboard arguments
+dashboardArgs = arrayNew( \
+    objectNew('name', 'url', 'type', 'string', 'global', 'vURL', 'default', 'responsible-maintenance.json'), \
+    objectNew('name', 'doc', 'type', 'bool', 'default', false, 'explicit', true) \
+)
 
 
 # The Responsible Maintenance Dashboard type model
