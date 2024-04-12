@@ -1,0 +1,44 @@
+# Licensed under the MIT License
+# https://github.com/craigahobbs/chisel/blob/main/LICENSE
+
+include '../dashboard.mds'
+
+
+testDashboardModel = objectNew( \
+    'packageName', 'my-package', \
+    'language', 'Python', \
+    'homeURL', 'https://craigahobbs.github.io/my-package/', \
+    'lintURL', 'https://craigahobbs.github.io/my-package/pylintrc', \
+    'history', arrayNew( \
+        objectNew( \
+            'datetime', datetimeNew(2024, 4, 12, 15, 21), \
+            'version', '1.2.3', \
+            'lines', 661, \
+            'linesCovered', 487, \
+            'branches', 309, \
+            'branchesCovered', 217, \
+            'dependencies', arrayNew('other-package', 'other-package-2'), \
+            'dependenciesTotal', arrayNew('other-package', 'other-package-2', 'other-package-3', 'other-package-4', 'other-package-5') \
+        ) \
+    ) \
+)
+
+
+async function testDashboardMain():
+    unittestMockAll(objectNew( \
+        'systemFetch', objectNew('responsible-maintenance.json', jsonStringify(testDashboardModel)) \
+    ))
+    dashboardMain()
+    unittestDeepEqual( \
+        unittestMockEnd(), \
+        arrayNew( \
+            arrayNew('systemFetch', arrayNew('responsible-maintenance.json')), \
+            arrayNew('markdownPrint', arrayNew( \
+                '**Package:** my-package \\', \
+                '**Language:** Python \\', \
+                '**Home:** [my\\-package Home Page](https://craigahobbs.github.io/my-package/)' \
+            )) \
+        ) \
+    )
+endfunction
+unittestRunTestAsync('testDashboardMain')

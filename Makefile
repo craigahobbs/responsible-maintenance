@@ -16,12 +16,28 @@ $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/python-build/m
 # Set gh-pages source
 GHPAGES_SRC := static/
 
+# Development dependencies
+TESTS_REQUIRE := bare-script
+
 
 # Include python-build
 include Makefile.base
 
 
+# Disable pylint docstring warnings
+PYLINT_ARGS := $(PYLINT_ARGS) --disable=missing-class-docstring --disable=missing-function-docstring --disable=missing-module-docstring
+
+
+help:
+	@echo "            [test-dashboard]"
+
+
 clean:
 	rm -rf Makefile.base pylintrc
 
-PYLINT_ARGS := $(PYLINT_ARGS) --disable=missing-class-docstring --disable=missing-function-docstring --disable=missing-module-docstring
+
+.PHONY: test-dashboard
+commit: test-dashboard
+test-dashboard: $(DEFAULT_VENV_BUILD)
+	$(DEFAULT_VENV_BIN)/bare -s static/*.mds static/test/*.mds
+	$(DEFAULT_VENV_BIN)/bare -c 'include <markdownUp.bare>' static/test/runTests.mds$(if $(DEBUG), -d)$(if $(TEST), -v vTest "'$(TEST)'")
