@@ -1,0 +1,111 @@
+# Licensed under the MIT License
+# https://github.com/craigahobbs/responsible-maintenance/blob/main/LICENSE
+
+include <args.mds>
+
+
+# The Responsible Maintenance Dashboard main entry point
+async function dashboardMain():
+    args = argsParse(dashboardArgs)
+
+    # Render the dashboard model documentation, if requested
+    if objectGet(args, 'doc'):
+        markdownPrint(argsLink(dashboardArgs, 'Home'))
+        elementModelRender(schemaElements(dashboardTypes, 'ResponsibleDashboard'))
+        return
+    endif
+
+    # Fetch, parse, and validate the dashboard model
+    url = objectGet(args, 'url')
+    model = schemaValidate(dashboardTypes, 'ResponsibleDashboard', jsonParse(systemFetch(url)))
+    packageName = objectGet(model, 'packageName')
+    history = objectGet(model, 'history')
+
+    # Get the most recent measurement
+    dataSort(history, arrayNew(arrayNew('datetime', true)))
+    measures = arrayGet(history, 0)
+    linesTotal = objectGet(measures, 'lines')
+    linesCovered = objectGet(measures, 'linesCovered')
+    branchesTotal = objectGet(measures, 'branches')
+    branchesCovered = objectGet(measures, 'branchesCovered')
+    dependenciesDirect = objectGet(measures, 'dependencies')
+    dependenciesTotal = objectGet(measures, 'dependenciesTotal')
+
+    # Render the dashboard
+    title = 'Responsible Maintenance Dashboard'
+    documentSetTitle(title + ' - ' + packageName)
+    markdownPrint( \
+        '# ' + title, \
+        '', \
+        '**Package:** ' + packageName, \
+        '', \
+        '**Language:** ' + objectGet(model, 'language'), \
+        '', \
+        '**Home:** [' + markdownEscape(packageName) + ' Home Page](' + objectGet(model, 'homeURL') + ')', \
+        '', \
+        '**Line Coverage:** ' + numberToFixed(100 * linesCovered / linesTotal, 1) + '% (' + linesCovered + ' / ' + linesTotal + ')', \
+        '', \
+        '**Branch Coverage:** ' + numberToFixed(100 * branchesCovered / branchesTotal, 1) + '% (' + branchesCovered + ' / ' + branchesTotal + ')', \
+        '', \
+        '**Direct Dependencies:** ' + arrayLength(dependenciesDirect), \
+        '', \
+        '**Total Dependencies:** ' + arrayLength(dependenciesTotal) \
+    )
+endfunction
+
+
+# The Responsible Maintenance Dashboard arguments
+dashboardArgs = arrayNew( \
+    objectNew('name', 'url', 'type', 'string', 'global', 'vURL', 'default', 'responsible-maintenance.json'), \
+    objectNew('name', 'doc', 'type', 'bool', 'default', false, 'explicit', true) \
+)
+
+
+# The Responsible Maintenance Dashboard type model
+dashboardTypes = schemaParse( \
+    '# The Responsible Maintenance Dashboard model', \
+    'struct ResponsibleDashboard', \
+    '', \
+    '    # The package name', \
+    '    string packageName', \
+    '', \
+    '    # The language runtime', \
+    '    string language', \
+    '', \
+    '    # The package home URL', \
+    '    string homeURL', \
+    '', \
+    '    # The linter configuration file URL', \
+    '    optional string lintURL', \
+    '', \
+    '    # The package history', \
+    '    ResponsibleMeasures[len > 0] history', \
+    '', \
+    '', \
+    "# A package's dependencies", \
+    'struct ResponsibleMeasures', \
+    '', \
+    '    # The date and time of the measurement', \
+    '    datetime datetime', \
+    '', \
+    '    # The package version', \
+    '    string version', \
+    '', \
+    '    # The total number of code lines', \
+    '    int(> 0) lines', \
+    '', \
+    '    # The number of code lines covered by unit tests', \
+    '    int(> 0) linesCovered', \
+    '', \
+    '    # The total number of code branches', \
+    '    int(> 0) branches', \
+    '', \
+    '    # The number of code branches covered by unit tests', \
+    '    int(> 0) branchesCovered', \
+    '', \
+    '    # The direct dependency package names', \
+    '    string[] dependencies', \
+    '', \
+    '    # The total dependency package names', \
+    '    string[] dependenciesTotal' \
+)

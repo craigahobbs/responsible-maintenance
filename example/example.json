@@ -1,0 +1,17 @@
+{
+    "packageName": "markdown-up",
+    "language": "Python",
+    "homeURL": "https://github.com/craigahobbs/markdown-up-py#readme",
+    "history": [
+        {
+            "datetime": "2024-04-09T14:37:00-07:00",
+            "version": "1.2.3",
+            "lines": 1200,
+            "linesCovered": 1100,
+            "branches": 1800,
+            "branchesCovered": 1700,
+            "dependencies": ["package-a"],
+            "dependenciesTotal": ["package-a", "package-b"]
+        }
+    ]
+}
