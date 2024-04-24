@@ -19,6 +19,17 @@ async function dashboardMain():
     url = objectGet(args, 'url')
     model = schemaValidate(dashboardTypes, 'ResponsibleDashboard', jsonParse(systemFetch(url)))
     packageName = objectGet(model, 'packageName')
+    history = objectGet(model, 'history')
+
+    # Get the most recent measurement
+    dataSort(history, arrayNew(arrayNew('datetime', true)))
+    measures = arrayGet(history, 0)
+    linesTotal = objectGet(measures, 'lines')
+    linesCovered = objectGet(measures, 'linesCovered')
+    branchesTotal = objectGet(measures, 'branches')
+    branchesCovered = objectGet(measures, 'branchesCovered')
+    dependenciesDirect = objectGet(measures, 'dependencies')
+    dependenciesTotal = objectGet(measures, 'dependenciesTotal')
 
     # Render the dashboard
     title = 'Responsible Maintenance Dashboard'
@@ -30,7 +41,15 @@ async function dashboardMain():
         '', \
         '**Language:** ' + objectGet(model, 'language'), \
         '', \
-        '**Home:** [' + markdownEscape(packageName) + ' Home Page](' + objectGet(model, 'homeURL') + ')' \
+        '**Home:** [' + markdownEscape(packageName) + ' Home Page](' + objectGet(model, 'homeURL') + ')', \
+        '', \
+        '**Line Coverage:** ' + numberToFixed(100 * linesCovered / linesTotal, 1) + '% (' + linesCovered + ' / ' + linesTotal + ')', \
+        '', \
+        '**Branch Coverage:** ' + numberToFixed(100 * branchesCovered / branchesTotal, 1) + '% (' + branchesCovered + ' / ' + branchesTotal + ')', \
+        '', \
+        '**Direct Dependencies:** ' + arrayLength(dependenciesDirect), \
+        '', \
+        '**Total Dependencies:** ' + arrayLength(dependenciesTotal) \
     )
 endfunction
 

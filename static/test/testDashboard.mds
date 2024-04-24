@@ -41,7 +41,15 @@ async function testDashboardMain():
                 '', \
                 '**Language:** Python', \
                 '', \
-                '**Home:** [my\\-package Home Page](https://craigahobbs.github.io/my-package/)' \
+                '**Home:** [my\\-package Home Page](https://craigahobbs.github.io/my-package/)', \
+                '', \
+                '**Line Coverage:** 73.7% (487 / 661)', \
+                '', \
+                '**Branch Coverage:** 70.2% (217 / 309)', \
+                '', \
+                '**Direct Dependencies:** 2', \
+                '', \
+                '**Total Dependencies:** 5' \
             )) \
         ) \
     )
