@@ -1,6 +1,7 @@
 # Licensed under the MIT License
 # https://github.com/craigahobbs/responsible-maintenance/blob/main/LICENSE
 
+
 # Download python-build
 define WGET
 ifeq '$$(wildcard $(notdir $(1)))' ''
@@ -16,12 +17,13 @@ $(eval $(call WGET, https://craigahobbs.github.io/python-build/pylintrc))
 # Set gh-pages source
 GHPAGES_SRC := static/
 
-# Development dependencies
-TESTS_REQUIRE := bare-script
-
 
 # Include python-build
 include Makefile.base
+
+
+# Development dependencies
+TESTS_REQUIRE := bare-script
 
 
 # Disable pylint docstring warnings
